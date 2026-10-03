@@ -1,0 +1,20 @@
+[
+  {
+    "name": "qwen3:1.7b",
+    "context": 32768,
+    "memory_gb": 2.0,
+    "tps": 70,
+    "warm_latency_s": 0.1,
+    "cold_latency_s": 2.0,
+    "quality": {"summary": 0.70, "qa": 0.63}
+  },
+  {
+    "name": "qwen3:8b",
+    "context": 32768,
+    "memory_gb": 7.0,
+    "tps": 28,
+    "warm_latency_s": 0.2,
+    "cold_latency_s": 5.0,
+    "quality": {"summary": 0.86, "qa": 0.82}
+  }
+]
