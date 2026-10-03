@@ -5,7 +5,14 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "local-model-router"
 version = "0.1.0"
+description = "Queue-aware workload router for heterogeneous local language-model pools."
+readme = "README.md"
 requires-python = ">=3.10"
+authors = [{name = "Aarnav Saboo"}]
+keywords = ["llm", "routing", "scheduling", "inference", "local-models"]
+
+[project.urls]
+Repository = "https://github.com/aarnavsaboo/local-model-router"
 
 [tool.setuptools.packages.find]
 include = ["local_model_router*"]
