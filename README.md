@@ -1,10 +1,10 @@
 # local-model-router
 
-A local model-pool router and workload scheduler for experiments with several language models on one machine.
+A queue-aware model-pool router and workload scheduler for heterogeneous language models on one machine.
 
-The project started as a simple "pick the fastest model that satisfies a task floor" function. It now models a small local inference pool: model capabilities, memory footprints, warm/cold state, observed throughput, queued work and configurable workload constraints.
+The routing model combines capabilities, memory footprints, warm/cold state, observed throughput, queued work, context limits and configurable workload constraints. Hard feasibility checks are separated from candidate scoring so routing decisions remain explainable.
 
-The router is intended for systems experiments. It does not assume there is one best model for every task.
+The system is designed for model-serving and scheduling experiments rather than assuming one model is optimal for every workload.
 
 ## Routing inputs
 
