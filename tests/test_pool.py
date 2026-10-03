@@ -19,14 +19,19 @@ class Tests(unittest.TestCase):
             ModelProfile("a",8192,2,50,{"qa":.8},warm=True,capacity=2),
             ModelProfile("b",32768,8,20,{"qa":.9},warm=True),
         ])
-        decision = route(pool, Task("x","qa",1000,100,min_quality=.75))
+        decision = route(pool, Task("qa",1000,100,min_quality=.75,id="x"))
         self.assertEqual(decision.model,"a")
 
     def test_simulation(self):
         pool = ModelPool([ModelProfile("a",8192,2,50,{"qa":1},warm=True,capacity=1)])
-        rows = replay(pool,[Task("1","qa",100,100),Task("2","qa",100,100)])
+        rows = replay(pool,[
+            Task("qa",100,100,id="1"),
+            Task("qa",100,100,id="2"),
+        ])
         self.assertEqual(len(rows),2)
+        self.assertTrue(all(x["ok"] for x in rows))
+        self.assertGreaterEqual(rows[1]["queued_s"],0)
 
 
-if __name__ == "__main__":
+if __name__=="__main__":
     unittest.main()

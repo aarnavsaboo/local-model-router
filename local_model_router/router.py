@@ -21,7 +21,6 @@ class ModelProfile:
 
 @dataclass(frozen=True)
 class Task:
-    id: str
     kind: str
     prompt_tokens: int
     output_tokens: int
@@ -30,6 +29,7 @@ class Task:
     max_latency_s: float = inf
     preferred_runtime: str | None = None
     priority: int = 0
+    id: str = ""
 
 
 @dataclass(frozen=True)
