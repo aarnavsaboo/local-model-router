@@ -1,30 +1,110 @@
 # local-model-router
 
-A small routing experiment for choosing between several language models running on the same local machine.
+A local model-pool router and workload scheduler for experiments with several language models on one machine.
 
-Instead of hard-coding one model for every request, the router keeps simple model profiles and recent observations for throughput, warm/cold latency, context capacity and task scores. A request can then be matched to the smallest local model that satisfies its constraints.
+The project started as a simple "pick the fastest model that satisfies a task floor" function. It now models a small local inference pool: model capabilities, memory footprints, warm/cold state, observed throughput, queued work and configurable workload constraints.
 
-The point is not to invent a universal routing score. It is to make the trade-off explicit and measurable.
+The router is intended for systems experiments. It does not assume there is one best model for every task.
 
-## Inputs to a route
+## Routing inputs
+
+A job can specify:
 
 - task family
-- estimated prompt and output tokens
-- minimum task score
-- memory budget
-- context-window requirement
-- recent tokens/second and latency observations
-- whether a model is already warm
+- prompt tokens
+- expected output tokens
+- minimum measured task score
+- maximum memory budget
+- required model context window
+- latency target
+- preferred runtime
+- batch/interactive class
+- priority
 
-```python
-from local_model_router import ModelProfile, Task, choose
+A model profile can include:
 
-models = [
-    ModelProfile("small", context=8192, memory_gb=3.0, tps=55, quality={"summary": .78}),
-    ModelProfile("medium", context=32768, memory_gb=8.0, tps=25, quality={"summary": .88}),
-]
+- context capacity
+- estimated resident memory
+- observed decode throughput
+- warm and cold startup latency
+- task-specific scores
+- current warm state
+- runtime/backend
+- number of active jobs
+- configured concurrency capacity
 
-print(choose(models, Task("summary", prompt_tokens=5000, output_tokens=300)))
+## Routing flow
+
+```text
+incoming job
+    |
+    v
+capacity/context filter
+    |
+    v
+task-quality floor
+    |
+    v
+memory feasibility
+    |
+    v
+predicted latency
+    |
+    +--> warm-state adjustment
+    +--> queue delay estimate
+    +--> decode estimate
+    |
+    v
+candidate ordering
+    |
+    v
+selected local model
+    |
+    v
+observation -> EWMA profile update
 ```
+
+## Example
+
+```bash
+python -m local_model_router route \
+  configs/pool.example.json \
+  examples/job.json
+
+python -m local_model_router simulate \
+  configs/pool.example.json \
+  examples/workload.jsonl
+```
+
+## Why simulate?
+
+A routing rule can look good one request at a time and behave badly under a burst. If every small request selects the same fast model, queue delay can dominate while a second model sits idle.
+
+The simulator advances a simple virtual clock, tracks active work per model and records selection decisions. It is deliberately small enough to inspect.
+
+## Observations
+
+After a real run, an observation can update:
+
+- tokens/second
+- warm/cold startup estimates
+- task score
+- recent latency
+- warm state
+
+Updates use exponential moving averages so one anomalous run does not replace the entire profile.
+
+## Repository layout
+
+- `router.py` — model/task records and selection
+- `pool.py` — mutable model-pool state
+- `scheduler.py` — queue-aware routing
+- `simulation.py` — virtual workload replay
+- `observations.py` — profile updates
+- `io.py` — JSON model/job formats
+- `report.py` — routing distribution and latency summaries
+- `configs/` — example local model pools
+- `examples/` — workload fixtures
+- `tests/` — routing and simulation tests
 
 Maintained by **Aarnav Saboo**.

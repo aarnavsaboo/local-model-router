@@ -1,0 +1,11 @@
+{
+  "id":"job-001",
+  "kind":"summary",
+  "prompt_tokens":6000,
+  "output_tokens":256,
+  "min_quality":0.72,
+  "max_memory_gb":12,
+  "max_latency_s":30,
+  "preferred_runtime":"ollama",
+  "priority":0
+}

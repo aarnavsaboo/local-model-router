@@ -1,0 +1,31 @@
+{
+  "memory_limit_gb": 24,
+  "models": [
+    {
+      "name":"small-local",
+      "context":16384,
+      "memory_gb":3.0,
+      "tps":60,
+      "quality":{"summary":0.75,"qa":0.70},
+      "warm_latency_s":0.1,
+      "cold_latency_s":2.0,
+      "warm":true,
+      "runtime":"ollama",
+      "capacity":2,
+      "active":0
+    },
+    {
+      "name":"medium-local",
+      "context":32768,
+      "memory_gb":8.0,
+      "tps":28,
+      "quality":{"summary":0.88,"qa":0.85},
+      "warm_latency_s":0.2,
+      "cold_latency_s":5.0,
+      "warm":false,
+      "runtime":"ollama",
+      "capacity":1,
+      "active":0
+    }
+  ]
+}
